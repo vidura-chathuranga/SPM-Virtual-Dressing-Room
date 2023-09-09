@@ -53,12 +53,20 @@ export const userRegister = async (req, res) => {
       shippingAddress,
     });
 
-    res.status(201).json(newUser);
+    // create access Token
+    const accessToken = jwt.sign(
+      { _id: newUser._id },
+      process.env.ACCESS_SECRET,
+      {
+        expiresIn: "3d",
+      }
+    );
+
+    res.status(201).json({ email, firstName, accessToken, _id: newUser._id });
   } catch (error) {
-    res.status(404).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
-
 
 // user login function
 export const userLogin = async (req, res) => {
@@ -94,10 +102,10 @@ export const userLogin = async (req, res) => {
     });
 
     // get user name
-    const { firstName } = user;
+    const { firstName, _id } = user;
 
     // send the response to the user
-    res.status(200).json({ email, firstName, accessToken });
+    res.status(200).json({ email, firstName, accessToken, _id: _id });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

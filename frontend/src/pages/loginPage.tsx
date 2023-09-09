@@ -5,15 +5,9 @@ import { createStyles} from '@mantine/core';
 
 const useStyles = createStyles((theme) =>({
     background : {
-      height : "100vh",
-    //   backgroundImage : `url(${backgroundImage})`,
-      backgroundRepeat : "no-repeat",
-      backgroundPosition : "center",
-      backgroundSize : "cover" ,
       display: "flex",
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor : "lightgrey" 
     }
   }));
 const LoginPage = () => {
