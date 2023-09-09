@@ -3,6 +3,7 @@ import 'dotenv/config';
 import cors from 'cors';
 import userRoutes from './routes/user.routes.js';
 import dbConnect from "./configs/dbConfig.js";
+import ItemsRoutes from './routes/items.routes.js';
 
 // initialize the express
 const app = express();
@@ -31,6 +32,8 @@ app.get("/",(req,res)=>{
 
 // request redirect to the user routes
 app.use('/user',userRoutes);
+// redirect to the Items route
+app.use("/items",ItemsRoutes);
 
 // started server
 app.listen(PORT,()=>{
