@@ -16,8 +16,9 @@ import {
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { Carousel } from "@mantine/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { useRef } from "react";
+import { useContext, useRef } from "react";
 import { IconShoppingCartPlus } from "@tabler/icons-react";
+import { CartContext, CartItem } from "../../contexts/CartContext";
 
 const useStyles = createStyles((theme) => ({
   price: {
@@ -50,10 +51,22 @@ const useStyles = createStyles((theme) => ({
 }));
 
 const ItemShowCase = () => {
+  const { dispatch } = useContext(CartContext);
   const { user }: any = useAuthContext();
   const { classes } = useStyles();
   const autoplays: any = useRef();
   autoplays.current = [];
+
+  const addToCart = (item: any) => {
+    const cartItem: CartItem = {
+      id: item._id,
+      image: item.images[0],
+      name: item.title,
+      price: item.sellingPrice,
+      quantity: 1,
+    };
+    dispatch({ type: "ADD_TO_CART", payload: cartItem });
+  };
 
   const fetchItems = () => {
     return axios.get("http://localhost:3001/items/", {
@@ -77,17 +90,10 @@ const ItemShowCase = () => {
     currency: "LKR",
   });
 
-//   generate item cards
+  //   generate item cards
   const items = data.map((item: any, index: any) => (
     <div key={item._id}>
-      <Card
-        shadow="sm"
-        padding="lg"
-        radius="md"
-        withBorder
-        component="a"
-        href="#"
-      >
+      <Card shadow="sm" padding="lg" radius="md" withBorder>
         <Card.Section>
           <Carousel
             loop
@@ -107,7 +113,7 @@ const ItemShowCase = () => {
             ))}
           </Carousel>
         </Card.Section>
-        <Rating value={item.rating} fractions={2} readOnly size="xs" mt={10}/>
+        <Rating value={item.rating} fractions={2} readOnly size="xs" mt={10} />
         <Group position="apart" mt="md" mb="xs">
           <Text weight={500}>{item.title}</Text>
           <Badge color="pink" variant="light">
@@ -120,7 +126,20 @@ const ItemShowCase = () => {
         </Text>
 
         <Group mt={10} position="apart">
-          <Text weight={500} color="blue" size={22}>{rupee.format(item.sellingPrice)}</Text>
+          <Text weight={500} color="blue" size={22}>
+            {rupee.format(item.sellingPrice)}
+          </Text>
+          <Button
+            variant="outline"
+            color="blue"
+            size="sm"
+            onClick={() => {
+              addToCart(item);
+            }}
+          >
+            <IconShoppingCartPlus />
+            Add to Cart
+          </Button>
         </Group>
       </Card>
     </div>

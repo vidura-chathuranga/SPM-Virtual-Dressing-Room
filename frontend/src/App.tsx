@@ -3,15 +3,18 @@ import AllRoutes from "./Routes/routes";
 import { AuthContextProvider } from "./contexts/AuthContext";
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
+import { CartContextProvider } from "./contexts/CartContext";
 
 function App() {
   return (
-    <AuthContextProvider>
-      <MantineProvider withGlobalStyles withNormalizeCSS>
-        <Notifications position="top-center" />
-        <AllRoutes />
-      </MantineProvider>
-    </AuthContextProvider>
+    <CartContextProvider>
+      <AuthContextProvider>
+        <MantineProvider withGlobalStyles withNormalizeCSS>
+          <Notifications position="top-center" />
+          <AllRoutes />
+        </MantineProvider>
+      </AuthContextProvider>
+    </CartContextProvider>
   );
 }
 
