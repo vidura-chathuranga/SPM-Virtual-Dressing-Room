@@ -110,3 +110,75 @@ export const userLogin = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// get user by id
+export const getUserById = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      throw new Error("user not found");
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const updateUserById = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+
+    if (!user) {
+      throw new Error("user not found");
+    }
+
+    //if req.body.email is not equal to user.email and req.body.email is already exist in the database
+    if (req.body.email !== user.email) {
+      const emailUser = User.findOne({ email: req.body.email });
+      if (emailUser) {
+        throw new Error("email already exist");
+      }
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const updatePassword = async (req, res) => {
+  const userID = req.params.id;
+  const { currentPassword, newPassword } = req.body;
+  try {
+    const user = await User.findById(userID);
+
+    if (!user) {
+      throw new Error("user not found");
+    }
+
+    if (!bcrypt.compareSync(currentPassword, user.password)) {
+      throw new Error("Current password is wrong");
+    }
+
+    // generate the salt
+    const salt = await bcrypt.genSalt(parseInt(process.env.SALT_ROUND));
+    // hash the password
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    const newUser = {
+      password: hashedPassword,
+    };
+
+    const updatedUser = await User.findByIdAndUpdate(userID, newUser, {
+      new: true,
+    });
+
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

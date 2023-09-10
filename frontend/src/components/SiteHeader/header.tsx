@@ -12,12 +12,11 @@ import {
   Divider,
   Center,
   Box,
-  Burger,
   rem,
   Avatar,
+  Menu,
 } from "@mantine/core";
 //   import { MantineLogo } from '@mantine/ds';
-import { useDisclosure } from "@mantine/hooks";
 import {
   IconNotification,
   IconCode,
@@ -26,9 +25,13 @@ import {
   IconFingerprint,
   IconCoin,
   IconChevronDown,
+  IconLogout,
+  IconUser,
 } from "@tabler/icons-react";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { useLogout } from "../../hooks/useLogout";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -97,6 +100,26 @@ const useStyles = createStyles((theme) => ({
       display: "none",
     },
   },
+  user: {
+    color: theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+    padding: `${theme.spacing.xs} ${theme.spacing.sm}`,
+    borderRadius: theme.radius.sm,
+    transition: "background-color 100ms ease",
+
+    "&:hover": {
+      backgroundColor:
+        theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
+    },
+
+    [theme.fn.smallerThan("xs")]: {
+      display: "none",
+    },
+  },
+
+  userActive: {
+    backgroundColor:
+      theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
+  },
 }));
 
 const mockdata = [
@@ -133,10 +156,12 @@ const mockdata = [
 ];
 
 const SiteHeader = () => {
+  const navigate = useNavigate();
   const { user }: any = useAuthContext();
-  const {logout} = useLogout();
+  const { logout } = useLogout();
+  const [userMenuOpened, setUserMenuOpened] = useState(false);
 
-  const { classes, theme } = useStyles();
+  const { classes, theme, cx } = useStyles();
 
   const links = mockdata.map((item) => (
     <UnstyledButton className={classes.subLink} key={item.title}>
@@ -167,9 +192,9 @@ const SiteHeader = () => {
             spacing={0}
             className={classes.hiddenMobile}
           >
-            <a href="#" className={classes.link}>
+            <Link to="#" className={classes.link}>
               Home
-            </a>
+            </Link>
             <HoverCard
               width={600}
               position="bottom"
@@ -178,7 +203,7 @@ const SiteHeader = () => {
               withinPortal
             >
               <HoverCard.Target>
-                <a href="#" className={classes.link}>
+                <Link to="#" className={classes.link}>
                   <Center inline>
                     <Box component="span" mr={5}>
                       Features
@@ -188,7 +213,7 @@ const SiteHeader = () => {
                       color={theme.fn.primaryColor()}
                     />
                   </Center>
-                </a>
+                </Link>
               </HoverCard.Target>
 
               <HoverCard.Dropdown sx={{ overflow: "hidden" }}>
@@ -224,26 +249,66 @@ const SiteHeader = () => {
                 </div>
               </HoverCard.Dropdown>
             </HoverCard>
-            <a href="#" className={classes.link}>
-              Learn
-            </a>
-            <a href="#" className={classes.link}>
-              Academy
-            </a>
           </Group>
           {!user && (
             <Group className={classes.hiddenMobile}>
-              <Button variant="default" component="a" href="/login">Log in</Button>
-              <Button component="a" href="/register">Sign up</Button>
+              <Button variant="default" component="a" href="/login">
+                Log in
+              </Button>
+              <Button component="a" href="/register">
+                Sign up
+              </Button>
             </Group>
           )}
 
           {user && (
-            <Group spacing={"lg"}>
-                <Avatar radius={"100%"} color="cyan">{user.firstName[0]}</Avatar>
-              <Text weight={500}>{`Hello, ${user.firstName}`}</Text>
-              <Button variant="outline" onClick={logout}>Logout</Button>
-            </Group>
+            <Menu
+              width={260}
+              position="bottom-end"
+              transitionProps={{ transition: "pop-top-right" }}
+              onClose={() => setUserMenuOpened(false)}
+              onOpen={() => setUserMenuOpened(true)}
+              withinPortal
+            >
+              <Menu.Target>
+                <UnstyledButton
+                  className={cx(classes.user, {
+                    [classes.userActive]: userMenuOpened,
+                  })}
+                >
+                  <Group spacing={7}>
+                    <Avatar radius={"100%"} color="cyan">
+                      {user.firstName[0]}
+                    </Avatar>
+                    <Text
+                      weight={600}
+                      size="lg"
+                      sx={{ lineHeight: 1.5 }}
+                      mr={3}
+                    >
+                      {`Hello, ${user.firstName}!`}
+                    </Text>
+                    <IconChevronDown size={rem(12)} stroke={1.5} />
+                  </Group>
+                </UnstyledButton>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Label>Settings</Menu.Label>
+                <Menu.Divider />
+                <Menu.Item
+                  icon={<IconUser size="0.9rem" stroke={1.5} />}
+                  onClick={() => navigate("/profile")}
+                >
+                  Your profile
+                </Menu.Item>
+                <Menu.Item
+                  icon={<IconLogout size="0.9rem" stroke={1.5} />}
+                  onClick={logout}
+                >
+                  Logout
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
           )}
         </Group>
       </Header>
