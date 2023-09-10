@@ -4,6 +4,7 @@ import cors from 'cors';
 import userRoutes from './routes/user.routes.js';
 import dbConnect from "./configs/dbConfig.js";
 import ItemsRoutes from './routes/items.routes.js';
+import AdminRoutes from './routes/admin.routes.js';
 
 // initialize the express
 const app = express();
@@ -34,6 +35,9 @@ app.get("/",(req,res)=>{
 app.use('/user',userRoutes);
 // redirect to the Items route
 app.use("/items",ItemsRoutes);
+
+// redirect to admin routes
+app.use("/admin",AdminRoutes);
 
 // started server
 app.listen(PORT,()=>{
