@@ -16,8 +16,6 @@ import {
   rem,
   Avatar,
 } from "@mantine/core";
-//   import { MantineLogo } from '@mantine/ds';
-import { useDisclosure } from "@mantine/hooks";
 import {
   IconNotification,
   IconCode,
@@ -240,7 +238,7 @@ const SiteHeader = () => {
 
           {user && (
             <Group spacing={"lg"}>
-                <Avatar radius={"100%"} color="cyan">{user.firstName[0]}</Avatar>
+                <Avatar radius={"100%"} color="cyan">{user.firstName[0]}</Avatar> 
               <Text weight={500}>{`Hello, ${user.firstName}`}</Text>
               <Button variant="outline" onClick={logout}>Logout</Button>
             </Group>

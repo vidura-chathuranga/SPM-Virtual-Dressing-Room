@@ -6,18 +6,15 @@ import {
   Image,
   Text,
   Badge,
-  Button,
   Group,
   getStylesRef,
   rem,
   createStyles,
-  Paper,
 } from "@mantine/core";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { Carousel } from "@mantine/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { useRef } from "react";
-import { IconShoppingCartPlus } from "@tabler/icons-react";
 
 const useStyles = createStyles((theme) => ({
   price: {
@@ -67,7 +64,7 @@ const ItemShowCase = () => {
   } = useQuery(["Items"], () => fetchItems().then((response) => response.data));
 
   //   generate ref array
-  data.map((item: any, index: any) => {
+  data.forEach((item: any, index: any) => {
     autoplays.current.push(Autoplay({ delay: (index + 1) * 1000 }));
   });
 
@@ -76,7 +73,7 @@ const ItemShowCase = () => {
     style: "currency",
     currency: "LKR",
   });
-
+  
 //   generate item cards
   const items = data.map((item: any, index: any) => (
     <div key={item._id}>
@@ -85,12 +82,14 @@ const ItemShowCase = () => {
         padding="lg"
         radius="md"
         withBorder
-        component="a"
+        component="a"      
         href="#"
       >
         <Card.Section>
           <Carousel
             loop
+            withIndicators
+            withControls = {false}
             plugins={[autoplays.current[index]]}
             onMouseEnter={autoplays.current[index].stop}
             onMouseLeave={autoplays.current[index].reset}
