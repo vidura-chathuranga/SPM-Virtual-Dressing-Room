@@ -53,9 +53,7 @@ const ItemShowCase = () => {
   autoplays.current = [];
 
   const fetchItems = () => {
-    return axios.get("http://localhost:3001/items/", {
-      headers: { Authorization: `bearer ${user.accessToken}` },
-    });
+    return axios.get("http://localhost:3001/items/");
   };
   const {
     data = [],

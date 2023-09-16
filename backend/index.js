@@ -5,6 +5,7 @@ import userRoutes from './routes/user.routes.js';
 import dbConnect from "./configs/dbConfig.js";
 import ItemsRoutes from './routes/items.routes.js';
 import AdminRoutes from './routes/admin.routes.js';
+import HumanModelRoutes from './routes/humanModel.routes.js';
 
 // initialize the express
 const app = express();
@@ -38,6 +39,8 @@ app.use("/items",ItemsRoutes);
 
 // redirect to admin routes
 app.use("/admin",AdminRoutes);
+
+app.use('/human',HumanModelRoutes);
 
 // started server
 app.listen(PORT,()=>{

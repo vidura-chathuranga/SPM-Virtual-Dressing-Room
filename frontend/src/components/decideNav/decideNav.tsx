@@ -1,20 +1,20 @@
 import { useLocation } from "react-router-dom";
 import SiteHeader from "../SiteHeader/header";
 
+const DecideNav = () => {
+  const location = useLocation();
 
-const DecideNav = () =>{
-    const location = useLocation();
-    
-    if(location.pathname.startsWith("/admin/dashboard")){
-        return <></>
-    }
-    else if(location.pathname.startsWith("/admin")){
-        return <></>
-    }else if(location.pathname.startsWith("/user")){
-        return <SiteHeader/>
-    }else{
-        return <></>
-    }
-}
+
+ 
+  if (location.pathname === "/") {
+    return <SiteHeader />;
+  } else if (location.pathname === "/login") {
+    return <SiteHeader />;
+  } else if (location.pathname === "/register") {
+    return <SiteHeader />;
+  } else {
+    return <></>;
+  }
+};
 
 export default DecideNav;
