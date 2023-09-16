@@ -1,5 +1,14 @@
-import { useState } from 'react';
-import { Navbar, Center, Tooltip, UnstyledButton, createStyles, Stack, rem,Avatar } from '@mantine/core';
+import { useState } from "react";
+import {
+  Navbar,
+  Center,
+  Tooltip,
+  UnstyledButton,
+  createStyles,
+  Stack,
+  rem,
+  Avatar,
+} from "@mantine/core";
 import {
   IconHome2,
   IconGauge,
@@ -9,9 +18,13 @@ import {
   IconUser,
   IconSettings,
   IconLogout,
-} from '@tabler/icons-react';
-import { useAuthContextAdmin } from '../../../hooks/useAuthContextAdmin';
-import { useLogoutAdmin } from '../../../hooks/useLogoutAdmin';
+  IconCirclePlus,
+  IconBrandCashapp,
+  IconWoman
+} from "@tabler/icons-react";
+import { useAuthContextAdmin } from "../../../hooks/useAuthContextAdmin";
+import { useLogoutAdmin } from "../../../hooks/useLogoutAdmin";
+import { useNavigate } from "react-router-dom";
 // import { MantineLogo } from '@mantine/ds';
 
 const useStyles = createStyles((theme) => ({
@@ -19,16 +32,17 @@ const useStyles = createStyles((theme) => ({
     width: rem(50),
     height: rem(50),
     borderRadius: theme.radius.md,
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     color: theme.white,
     opacity: 0.85,
 
-    '&:hover': {
+    "&:hover": {
       opacity: 1,
       backgroundColor: theme.fn.lighten(
-        theme.fn.variant({ variant: 'filled', color: theme.primaryColor }).background!,
+        theme.fn.variant({ variant: "filled", color: theme.primaryColor })
+          .background!,
         0.1
       ),
     },
@@ -36,9 +50,10 @@ const useStyles = createStyles((theme) => ({
 
   active: {
     opacity: 1,
-    '&, &:hover': {
+    "&, &:hover": {
       backgroundColor: theme.fn.lighten(
-        theme.fn.variant({ variant: 'filled', color: theme.primaryColor }).background!,
+        theme.fn.variant({ variant: "filled", color: theme.primaryColor })
+          .background!,
         0.15
       ),
     },
@@ -56,7 +71,10 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
   const { classes, cx } = useStyles();
   return (
     <Tooltip label={label} position="right" transitionProps={{ duration: 0 }}>
-      <UnstyledButton onClick={onClick} className={cx(classes.link, { [classes.active]: active })}>
+      <UnstyledButton
+        onClick={onClick}
+        className={cx(classes.link, { [classes.active]: active })}
+      >
         <Icon size="1.2rem" stroke={1.5} />
       </UnstyledButton>
     </Tooltip>
@@ -64,26 +82,42 @@ function NavbarLink({ icon: Icon, label, active, onClick }: NavbarLinkProps) {
 }
 
 const mockdata = [
-  { icon: IconHome2, label: 'Home' },
-  { icon: IconGauge, label: 'Dashboard' },
-  { icon: IconDeviceDesktopAnalytics, label: 'Analytics' },
-  { icon: IconCalendarStats, label: 'Releases' },
-  { icon: IconUser, label: 'Account' },
-  { icon: IconFingerprint, label: 'Security' },
-  { icon: IconSettings, label: 'Settings' },
+  {
+    icon: IconCirclePlus,
+    label: "Add Items",
+    link: "/admin/dashboard/addItem",
+  },
+  {
+    icon: IconBrandCashapp,
+    label: "Finance",
+    link: "/admin/dashboard/finance",
+  },
+  {
+    icon: IconWoman,
+    label: "Manage Human Models",
+    link: "/admin/dashboard/managehuman",
+  },
+  { icon: IconCalendarStats, label: "Releases", link: "/admin/dashboard/" },
+  { icon: IconUser, label: "Account", link: "/admin/dashboard/" },
+  { icon: IconFingerprint, label: "Security", link: "/admin/dashboard/" },
+  { icon: IconSettings, label: "Settings", link: "/admin/dashboard/" },
 ];
 
-const AdminSideNavBar = () =>{
-    const [active, setActive] = useState(2);
-    const {admin} : any = useAuthContextAdmin();
-    const {logout} = useLogoutAdmin();
+const AdminSideNavBar = ({ link_id }: any) => {
+  const [active, setActive] = useState(link_id);
+  const { admin }: any = useAuthContextAdmin();
+  const { logout } = useLogoutAdmin();
+  const navigate = useNavigate();
 
   const links = mockdata.map((link, index) => (
     <NavbarLink
       {...link}
       key={link.label}
       active={index === active}
-      onClick={() => setActive(index)}
+      onClick={() => {
+        setActive(index);
+        navigate(link.link);
+      }}
     />
   ));
 
@@ -93,13 +127,13 @@ const AdminSideNavBar = () =>{
       width={{ base: 80 }}
       p="md"
       sx={(theme) => ({
-        backgroundColor: theme.fn.variant({ variant: 'filled', color: theme.primaryColor })
-          .background,
+        backgroundColor: theme.fn.variant({
+          variant: "filled",
+          color: theme.primaryColor,
+        }).background,
       })}
     >
-      <Center>
-        {/* <MantineLogo type="mark" inverted size={30} /> */}
-      </Center>
+      <Center>{/* <MantineLogo type="mark" inverted size={30} /> */}</Center>
       <Navbar.Section grow mt={50}>
         <Stack justify="center" spacing={0}>
           {links}
@@ -107,12 +141,14 @@ const AdminSideNavBar = () =>{
       </Navbar.Section>
       <Navbar.Section>
         <Stack justify="center" spacing={0}>
-          <Avatar size={"sm"} radius={"100%"} color='cyan' ml={10}>{admin.name[0]}</Avatar> 
-          <NavbarLink icon={IconLogout} label="Logout" onClick={logout}/>
+          <Avatar size={"sm"} radius={"100%"} color="cyan" ml={10}>
+            {admin.name[0]}
+          </Avatar>
+          <NavbarLink icon={IconLogout} label="Logout" onClick={logout} />
         </Stack>
       </Navbar.Section>
     </Navbar>
   );
-}
+};
 
 export default AdminSideNavBar;

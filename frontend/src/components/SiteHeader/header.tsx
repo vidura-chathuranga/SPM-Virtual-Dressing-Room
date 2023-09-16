@@ -24,9 +24,11 @@ import {
   IconFingerprint,
   IconCoin,
   IconChevronDown,
+  IconCheck,
 } from "@tabler/icons-react";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { useLogout } from "../../hooks/useLogout";
+import { showNotification } from "@mantine/notifications";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -132,7 +134,7 @@ const mockdata = [
 
 const SiteHeader = () => {
   const { user }: any = useAuthContext();
-  const {logout} = useLogout();
+  const { logout } = useLogout();
 
   const { classes, theme } = useStyles();
 
@@ -154,6 +156,17 @@ const SiteHeader = () => {
     </UnstyledButton>
   ));
 
+  const displayNotification = () => {
+    showNotification({
+      title: "logged out",
+      message: "you have successfully logged out",
+      color: "teal",
+      icon: <IconCheck />,
+      autoClose: true,
+      withCloseButton: true,
+      withBorder: true,
+    });
+  };
   return (
     <Box pb={20}>
       <Header height={60} px="md">
@@ -231,16 +244,30 @@ const SiteHeader = () => {
           </Group>
           {!user && (
             <Group className={classes.hiddenMobile}>
-              <Button variant="default" component="a" href="/login">Log in</Button>
-              <Button component="a" href="/register">Sign up</Button>
+              <Button variant="default" component="a" href="/login">
+                Log in
+              </Button>
+              <Button component="a" href="/register">
+                Sign up
+              </Button>
             </Group>
           )}
 
           {user && (
             <Group spacing={"lg"}>
-                <Avatar radius={"100%"} color="cyan">{user.firstName[0]}</Avatar> 
+              <Avatar radius={"100%"} color="cyan">
+                {user.firstName[0]}
+              </Avatar>
               <Text weight={500}>{`Hello, ${user.firstName}`}</Text>
-              <Button variant="outline" onClick={logout}>Logout</Button>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  logout();
+                  displayNotification();
+                }}
+              >
+                Logout
+              </Button>
             </Group>
           )}
         </Group>
