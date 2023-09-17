@@ -13,19 +13,20 @@ export const getAllItems = async (req, res) => {
 };
 
 export const AddItem = async (req, res) => {
-  const { title, description, sellingPrice, actualPrice, quantity } = req.body;
+  const { title, description, sellingPrice, actualPrice, quantity,imageUrls } = req.body;
 
   try {
-    if (!title || !description || !sellingPrice || !actualPrice || !quantity) {
+    if (!title || !description || !sellingPrice || !actualPrice || !quantity || !imageUrls) {
       throw new Error("All fields are required");
     }
-
+    
     const item = await Item.create({
       title,
       description,
       ActualPrice: actualPrice,
       sellingPrice,
       Quantity: quantity,
+      images : imageUrls
     });
 
     res.status(201).json(item);

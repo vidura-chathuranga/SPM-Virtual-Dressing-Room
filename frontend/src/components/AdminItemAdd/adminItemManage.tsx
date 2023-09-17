@@ -11,6 +11,9 @@ import {
   Modal,
   NumberInput,
   Textarea,
+  SimpleGrid,
+  Center,
+  Image,
 } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
@@ -20,6 +23,7 @@ import {
   IconCheck,
   IconClipboardData,
   IconEdit,
+  IconPhoto,
   IconPlus,
   IconSearch,
   IconTrash,
@@ -27,8 +31,7 @@ import {
 } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import { showNotification, updateNotification } from "@mantine/notifications";
-
-
+import { Dropzone, IMAGE_MIME_TYPE, FileWithPath } from "@mantine/dropzone";
 
 const useStyles = createStyles((theme) => ({
   tableHeader: {
@@ -92,6 +95,8 @@ const AdminItemAdd = () => {
   const [opened, setOpened] = useState(false);
   const [editOpened, setEditOpened] = useState(false);
 
+  // files state
+  const [files, setFiles] = useState<FileWithPath[]>([]);
   //   currency formater
   // format number to SL rupee
   let rupee = new Intl.NumberFormat("ta-LK", {
@@ -277,7 +282,7 @@ const AdminItemAdd = () => {
     },
   });
 
-  const handleSubmit = (values: {
+  const handleSubmit = async(values: {
     title: string;
     description: string;
     sellingPrice: Number;
@@ -293,9 +298,16 @@ const AdminItemAdd = () => {
       loading: true,
     });
 
+    // create image URL array
+    const imageUrls = [];
+
+    for(let i=0; i< files.length; i++){
+      imageUrls.push(await convertBase64(i))
+    }
+
     // request to add item endpoint
     axios
-      .post("http://localhost:3001/items/add", values, {
+      .post("http://localhost:3001/items/add", {...values,imageUrls}, {
         headers: { Authorization: `bearer ${admin.accessToken}` },
       })
       .then((res) => {
@@ -331,6 +343,32 @@ const AdminItemAdd = () => {
       });
   };
 
+  // image preview
+  const imagePreview = files.map((image, index) => {
+    const imageUrl = URL.createObjectURL(image);
+
+    return (
+      <Image
+        key={index}
+        src={imageUrl}
+        imageProps={{ onLoad: () => URL.revokeObjectURL(imageUrl) }}
+      />
+    );
+  });
+
+  const convertBase64 = (index : any) =>{
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+
+      fileReader.readAsDataURL(files[index]);
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = () => {
+        reject(fileReader.error);
+      };
+    });
+  }
   return (
     <>
       {/* edit modal */}
@@ -377,6 +415,7 @@ const AdminItemAdd = () => {
           </Button>
         </form>
       </Modal>
+
       {/* add modal */}
       <Modal opened={opened} onClose={() => setOpened(false)}>
         <Text align="center" weight={500}>
@@ -416,7 +455,19 @@ const AdminItemAdd = () => {
             required
             {...addItemForm.getInputProps("quantity")}
           />
-          <Button fullWidth type="submit">
+          {/* insert images */}
+          <Dropzone accept={IMAGE_MIME_TYPE} multiple onDrop={setFiles} mb={20} aria-required>
+            <Text align="center">Drop product images here</Text>
+          </Dropzone>
+
+          <SimpleGrid
+            cols={3}
+            breakpoints={[{ maxWidth: "sm", cols: 1 }]}
+            mt={imagePreview.length > 0 ? "xl" : 0}
+            mb={imagePreview.length > 0 ? "xl" : 0}
+          >{imagePreview}</SimpleGrid>
+
+          <Button fullWidth type="submit" disabled={files.length === 0}>
             Add Item
           </Button>
         </form>
