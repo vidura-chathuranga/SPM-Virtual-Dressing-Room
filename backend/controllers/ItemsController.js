@@ -74,3 +74,25 @@ export const updateItem = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// get item by Id
+export const getItemById = async(req,res) =>{
+
+  // get item by accessing params in request
+  const {id} = req.params;
+
+  try{
+
+    // get item by id
+    const item = await Item.findOne({_id : id});
+
+    // if item is not in the database
+    if(!item){  
+      throw new Error("Item not found");
+    }
+    // send item informations as a response
+    res.status(200).json(item);
+  }catch(error){
+    res.status(500).json({error:error.message});
+  }
+} 

@@ -17,11 +17,12 @@ import AdminDashboard from "../pages/adminDashboardAddItem";
 import DecideNav from "../components/decideNav/decideNav";
 import ManageHumanModelPage from "../pages/manageHumanModelPage";
 import AdminFinance from "../pages/adminDashboardFinance";
+import ViewItemPage from "../pages/viewItemPage";
+import ViewItem from "../components/viewItem/viewItem";
 
 const AllRoutes = () => {
   const { user } = useAuthContext();
   const { admin } = useAuthContextAdmin();
-  console.log(admin);
 
   const queryClient = new QueryClient();
   return (
@@ -68,6 +69,10 @@ const AllRoutes = () => {
                 <Navigate to={"/admin/login"} />
               )
             }
+          />
+          <Route
+            path="/view/item/:id"
+            element={admin ? <ViewItemPage /> : <Navigate to={"/"} />}
           />
           {/* <Route
             path="/user/login"
