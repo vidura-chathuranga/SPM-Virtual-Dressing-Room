@@ -6,7 +6,7 @@ const ManageHumanModelPage = () => {
   return (
     <Grid gutter={0}>
       <Grid.Col span="content">
-        <AdminSideNavBar link_id={1}/>
+        <AdminSideNavBar link_id={2}/>
       </Grid.Col>
       <Grid.Col span={11} ml={20}>
         <ManageHumanModel/>
