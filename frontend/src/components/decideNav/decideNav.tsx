@@ -12,7 +12,9 @@ const DecideNav = () => {
     return <SiteHeader />;
   } else if (location.pathname === "/register") {
     return <SiteHeader />;
-  } else {
+  } else if(location.pathname.startsWith('/view/item')){
+    return <SiteHeader/>
+  }else {
     return <></>;
   }
 };

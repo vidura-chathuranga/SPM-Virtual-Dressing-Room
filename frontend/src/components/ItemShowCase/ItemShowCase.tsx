@@ -1,4 +1,4 @@
-import { Rating, SimpleGrid } from "@mantine/core";
+import { LoadingOverlay, Rating, SimpleGrid } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {
@@ -15,6 +15,7 @@ import { useAuthContext } from "../../hooks/useAuthContext";
 import { Carousel } from "@mantine/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { useRef } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
   price: {
@@ -51,6 +52,7 @@ const ItemShowCase = () => {
   const { classes } = useStyles();
   const autoplays: any = useRef();
   autoplays.current = [];
+  const navigate = useNavigate();
 
   const fetchItems = () => {
     return axios.get("http://localhost:3001/items/");
@@ -80,8 +82,8 @@ const ItemShowCase = () => {
         padding="lg"
         radius="md"
         withBorder
-        component="a"      
-        href="#"
+        style={{cursor : "pointer"}}
+        onClick={() => {navigate(`/view/item/${item._id}`);}}
       >
         <Card.Section>
           <Carousel
@@ -123,8 +125,10 @@ const ItemShowCase = () => {
     </div>
   ));
 
+
   return (
     <SimpleGrid cols={3} spacing={"xl"} px={120} py={40}>
+      <LoadingOverlay visible={isLoading} overlayBlur={2}/>
       {items}
     </SimpleGrid>
   );
