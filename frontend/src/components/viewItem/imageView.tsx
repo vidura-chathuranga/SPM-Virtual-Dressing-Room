@@ -1,46 +1,83 @@
-import { Image, SimpleGrid, createStyles } from "@mantine/core";
-import { useRef } from "react";
+import {
+  Card,
+  Image,
+  LoadingOverlay,
+  SimpleGrid,
+  createStyles,
+  getStylesRef,
+} from "@mantine/core";
+import { useEffect, useRef, useState } from "react";
 
 const useStyles = createStyles((theme) => ({
-  wrapper: {
-    marginTop: 50,
-    marginLeft: 50,
-    marginRight: 50,
-  },
   largeImage: {
     width: 600,
     marginBottom: 30,
+    transition: "transform 500ms ease",
+    "&:hover": {
+      transform: "scale(1.03)",
+    },
   },
-  gridRow: {
-    height: 200,
+
+  card: {
+    marginTop: 10,
+    marginLeft: 20,
+    marginRight: 20,
+    marginBottom : 10
+  },
+  smallImage: {
+    cursor: "pointer",
+    transition: "transform 500ms ease",
+    "&:hover": {
+      transform: "scale(1.03)",
+    },
   },
 }));
-const ImageView = ({ images }: any) => {
-  const imageRef = useRef(null);
+const ImageView = ({ images, isLoading }: any) => {
   const { classes } = useStyles();
+
+  // large preview image manage
+  const [image, setImage] = useState(null);
 
   const imagePreviews = Array.isArray(images)
     ? images.map((image, index) => (
-        <div key={index}>
-          <Image src={image} />
+        <div key={index} className={classes.smallImage}>
+          <Image
+            src={image}
+            radius={5}
+            style={{ transition: "transform 500ms ease" }}
+            onClick={() => {
+              setImage(image);
+            }}
+          />
         </div>
       ))
     : null;
+
+  // Use useEffect to set the image state after data is received
+  useEffect(() => {
+    if (!isLoading && Array.isArray(images) && images.length > 0) {
+      setImage(images[0]);
+    }
+  }, [isLoading, images]);
+
   return (
-    <SimpleGrid>
-      {images ? (
-        <>
-          <div className={classes.largeImage}>
-            <Image src={images[0]} />
-          </div>
-          <div>
-            <SimpleGrid cols={images.length} className={classes.gridRow}>
-              {imagePreviews}
-            </SimpleGrid>
-          </div>
-        </>
-      ) : null}
-    </SimpleGrid>
+    <Card withBorder className={classes.card} radius={"md"}>
+      <LoadingOverlay visible={!images ? true : false} overlayBlur={2} />
+      <SimpleGrid p={30}>
+        {images ? (
+          <>
+            <div>
+              <Image src={image} radius={10} />
+            </div>
+            <Card.Section withBorder p={10} bg={"#f3efef"}>
+              <div>
+                <SimpleGrid cols={images.length}>{imagePreviews}</SimpleGrid>
+              </div>
+            </Card.Section>
+          </>
+        ) : null}
+      </SimpleGrid>
+    </Card>
   );
 };
 

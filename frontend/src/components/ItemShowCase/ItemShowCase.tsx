@@ -1,4 +1,4 @@
-import { Rating, SimpleGrid } from "@mantine/core";
+import { LoadingOverlay, Rating, SimpleGrid } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {
@@ -125,8 +125,10 @@ const ItemShowCase = () => {
     </div>
   ));
 
+
   return (
     <SimpleGrid cols={3} spacing={"xl"} px={120} py={40}>
+      <LoadingOverlay visible={isLoading} overlayBlur={2}/>
       {items}
     </SimpleGrid>
   );

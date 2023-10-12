@@ -19,9 +19,9 @@ const ViewItem = () =>{
     const {isLoading, data=[]} = useQuery(['itemData'],() => fetchItemById().then((response) => response.data))
     
     return (
-        <SimpleGrid cols={2}>
+        <SimpleGrid cols={2} pos={"absolute"}>
             <div>
-                <ImageView images={data?.images}/>
+                <ImageView images={data?.images} isLoading={isLoading}/>
             </div>
             <div>
                 {/* provide item information except the images */}
