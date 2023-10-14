@@ -6,6 +6,7 @@ import dbConnect from "./configs/dbConfig.js";
 import ItemsRoutes from './routes/items.routes.js';
 import AdminRoutes from './routes/admin.routes.js';
 import HumanModelRoutes from './routes/humanModel.routes.js';
+import InvoiceRoutes from './routes/invoices.routes.js';
 
 // initialize the express
 const app = express();
@@ -41,6 +42,9 @@ app.use("/items",ItemsRoutes);
 app.use("/admin",AdminRoutes);
 
 app.use('/human',HumanModelRoutes);
+
+// redirect to invoice routes
+app.use('/invoices',InvoiceRoutes);
 
 // started server
 app.listen(PORT,()=>{

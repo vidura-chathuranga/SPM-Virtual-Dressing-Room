@@ -491,7 +491,7 @@ const AdminItemAdd = () => {
       </Group>
       <ScrollArea
         w={"100mw"}
-        h={500}
+        h={"80vh"}
         scrollbarSize={"sm"}
         onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
       >
