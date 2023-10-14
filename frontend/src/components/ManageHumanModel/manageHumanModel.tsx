@@ -9,7 +9,7 @@ import {
   Button,
   Modal,
   NumberInput,
-  Textarea,
+  ActionIcon,
   FileInput,
 } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
@@ -19,13 +19,17 @@ import { useAuthContextAdmin } from "../../hooks/useAuthContextAdmin";
 import {
   IconCheck,
   IconClipboardData,
+  IconEdit,
+  IconEye,
   IconPlus,
   IconSearch,
+  IconTrash,
   IconUpload,
   IconX,
 } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import { showNotification, updateNotification } from "@mantine/notifications";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
   tableHeader: {
@@ -86,6 +90,10 @@ const ManageHumanModel = () => {
   const { admin }: any = useAuthContextAdmin();
   const [opened, setOpened] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const [editOpened,setEditOpened] = useState(false);
+
+  const navigate = useNavigate();
+
   // feth all the items data
   const {
     data = [],
@@ -101,22 +109,100 @@ const ManageHumanModel = () => {
       })
       .then((res) => res.data)
   );
+  
+  // delete Model
+  const deleteModel = (_id: string) => {
+    showNotification({
+      id: "Model-delete",
+      title: "Model is deleting",
+      message: "We are trying to delete Model",
+      autoClose: 1500,
+      loading: true,
+    });
 
+    // delete Model
+    axios
+      .delete(`http://localhost:3001/human/delete/${_id}`, {
+        headers: { Authorization: `bearer ${admin.accessToken}` },
+      })
+      .then((res) => {
+        // show success notification
+        updateNotification({
+          id: "Model-delete",
+          title: "Record was deleted",
+          message: "your record was deleted successfully",
+          autoClose: 1500,
+          color: "teal",
+          icon: <IconCheck />,
+        });
+
+        // refetch the updated data
+        refetch();
+      })
+      .catch((error) => {
+        updateNotification({
+          id: "Model-delete",
+          title: "Model was not deleted",
+          message: error.response.data.error,
+          autoClose: 1500,
+          color: "red",
+          icon: <IconX />,
+        });
+      });
+  };
+  
   //   generate rows
   const rows =
     data.length > 0
       ? data.map((model: any) => (
           <tr>
             <td>{model.name}</td>
-            <td>{model.shoulder}</td>
             <td>{model.chestWidth}</td>
             <td>{model.height}</td>
             <td>{model.bust}</td>
             <td>{model.weist}</td>
             <td>{model.hip}</td>
+            <td>
+              {
+                <Group spacing={"xs"}>
+                  <ActionIcon color="blue" component="a" href={`/view/human/${model.fileName}`} target="_blank">
+                    <IconEye size={25}/>
+                  </ActionIcon>
+                  <ActionIcon color="teal">
+                    <IconEdit
+                    size={25}
+                      
+                      onClick={() => {
+                        editHumanModelForm.setValues({
+                          _id: model._id,
+                          name: model.name,
+                          chestWidth: model.chestWidth,
+                          height: model.height,
+                          bust: model.bust,
+                          weist: model.weist,
+                          hip : model.hip,
+                          existFile : model.fileName
+                        });
+
+                        // opened edit modal
+                        setEditOpened(true);
+                      }}
+                    />
+                  </ActionIcon>
+                  <ActionIcon color="red">
+                    <IconTrash
+                      size={25}
+                      onClick={() => deleteModel(model._id)}
+                    />
+                  </ActionIcon>
+                </Group>
+              }
+            </td>
           </tr>
         ))
       : null;
+
+  console.log(data);
 
   const addHumanForm = useForm({
     initialValues: {
@@ -130,7 +216,7 @@ const ManageHumanModel = () => {
   });
 
   const handleSubmit = (values: any) => {
-    console.log(values);
+    console.log({ ...values, file });
     // loading notification
     showNotification({
       id: "add-item",
@@ -140,10 +226,27 @@ const ManageHumanModel = () => {
       loading: true,
     });
 
+    // Create a FormData object
+    const formData = new FormData();
+
+    // Append text data to the FormData object
+    formData.append("bust", values.bust);
+    formData.append("chestWidth", values.chestWidth);
+    formData.append("height", values.height);
+    formData.append("hip", values.hip);
+    formData.append("name", values.name);
+    formData.append("weist", values.weist);
+
+    // Append the file to the FormData object
+    formData.append("file", file!!);
+
     // request to add item endpoint
     axios
-      .post("http://localhost:3001/human/add", values, {
-        headers: { Authorization: `bearer ${admin.accessToken}` },
+      .post("http://localhost:3001/human/add", formData, {
+        headers: {
+          Authorization: `bearer ${admin.accessToken}`,
+          "Content-Type": "multipart/form-data",
+        },
       })
       .then((res) => {
         // refetch the updated data
@@ -177,58 +280,196 @@ const ManageHumanModel = () => {
         });
       });
   };
+
+  const handleEdit = (values: any) => {
+    console.log({ ...values, file });
+    // loading notification
+    showNotification({
+      id: "Edit-item",
+      title: "Record is Editing....",
+      message: "We are trying to Editing record",
+      autoClose: 1500,
+      loading: true,
+    });
+
+    // Create a FormData object
+    const formData = new FormData();
+
+    // Append text data to the FormData object
+    formData.append("_id",values._id);
+    formData.append("bust", values.bust);
+    formData.append("chestWidth", values.chestWidth);
+    formData.append("height", values.height);
+    formData.append("hip", values.hip);
+    formData.append("name", values.name);
+    formData.append("weist", values.weist);
+    formData.append("existFile",values.existFile);
+    // Append the file to the FormData object
+    formData.append("file", file!!);
+
+    // request to Edit item endpoint
+    axios
+      .put("http://localhost:3001/human/edit", formData, {
+        headers: {
+          Authorization: `bearer ${admin.accessToken}`,
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        // refetch the updated data
+        refetch();
+
+        // show success notification
+        updateNotification({
+          id: "Edit-item",
+          title: "Record was uploaded",
+          message: "your record was Edited successfully",
+          autoClose: 1500,
+          color: "teal",
+          icon: <IconCheck />,
+        });
+
+        // close the modal
+        setEditOpened(false);
+
+        // reset the form
+        editHumanModelForm.reset();
+      })
+      .catch((error) => {
+        console.log(error);
+        updateNotification({
+          id: "add-item",
+          title: "Record was not uploaded",
+          message: error.response.data.error,
+          autoClose: 1500,
+          color: "red",
+          icon: <IconX />,
+        });
+      });
+  };
+
+  const editHumanModelForm = useForm({
+    initialValues: {
+      _id  : "",
+      name: "",
+      chestWidth: "",
+      height: "",
+      bust: "",
+      weist: "",
+      hip: "",
+      existFile : ""
+    },
+  })
+
   return (
     <>
+         {/* Edit modal */}
+         <Modal opened={editOpened} onClose={() => setEditOpened(false)}>
+        <Text align="center" weight={500}>
+          Edit Human Model
+        </Text>
+        <form
+          onSubmit={editHumanModelForm.onSubmit((values) => handleEdit(values))}
+        >
+          <TextInput
+            label="Name"
+            mb={10}
+            required
+            {...editHumanModelForm.getInputProps("name")}
+          />
+          <NumberInput
+            label="Chest Width"
+            mb={10}
+            required
+            {...editHumanModelForm.getInputProps("chestWidth")}
+          />
+          <NumberInput
+            type="number"
+            label={"Bust"}
+            mb={10}
+            required
+            {...editHumanModelForm.getInputProps("bust")}
+          />
+          <NumberInput
+            type="number"
+            label={"Height"}
+            mb={10}
+            required
+            {...editHumanModelForm.getInputProps("height")}
+          />
+          <NumberInput
+            label={"Hip"}
+            mb={10}
+            required
+            {...editHumanModelForm.getInputProps("hip")}
+          />
+          <NumberInput
+            label={"Weist"}
+            mb={10}
+            required
+            {...editHumanModelForm.getInputProps("weist")}
+          />
+          <FileInput
+            label="Model File"
+            placeholder="model glb"
+            accept=".glb"
+            required
+            onChange={(e) => setFile(e)}
+            icon={<IconUpload size={rem(14)} />}
+          />
+          <Button fullWidth type="submit" mt={10}>
+            Add Model
+          </Button>
+        </form>
+      </Modal>
       {/* add modal */}
       <Modal opened={opened} onClose={() => setOpened(false)}>
         <Text align="center" weight={500}>
-          Add Item
+          Add Human Model
         </Text>
         <form
-          onSubmit={addHumanForm.onSubmit((values) =>
-            console.log(values, file)
-          )}
+          onSubmit={addHumanForm.onSubmit((values) => handleSubmit(values))}
         >
           <TextInput
-            label="name"
+            label="Name"
             mb={10}
             required
             {...addHumanForm.getInputProps("name")}
           />
           <NumberInput
-            label="chestWidth"
+            label="Chest Width"
             mb={10}
             required
             {...addHumanForm.getInputProps("chestWidth")}
           />
           <NumberInput
             type="number"
-            label={"bust"}
+            label={"Bust"}
             mb={10}
             required
             {...addHumanForm.getInputProps("bust")}
           />
           <NumberInput
             type="number"
-            label={"height"}
+            label={"Height"}
             mb={10}
             required
             {...addHumanForm.getInputProps("height")}
           />
           <NumberInput
-            label={"hip"}
+            label={"Hip"}
             mb={10}
             required
             {...addHumanForm.getInputProps("hip")}
           />
           <NumberInput
-            label={"weist"}
+            label={"Weist"}
             mb={10}
             required
             {...addHumanForm.getInputProps("weist")}
           />
           <FileInput
-            label="Model file"
+            label="Model File"
             placeholder="model glb"
             accept=".glb"
             required
@@ -251,7 +492,7 @@ const ManageHumanModel = () => {
           w={"70%"}
         />
         <Button leftIcon={<IconPlus />} onClick={() => setOpened(true)}>
-          Add Item
+          Add Model
         </Button>
         <Button leftIcon={<IconClipboardData />} color="red">
           Generate Document
@@ -259,13 +500,13 @@ const ManageHumanModel = () => {
       </Group>
       <ScrollArea
         w={"100mw"}
-        h={500}
+        h={"80vh"}
         scrollbarSize={"sm"}
         onScrollPositionChange={({ y }) => setScrolled(y !== 0)}
       >
         <Table
           highlightOnHover
-          horizontalSpacing={50}
+          horizontalSpacing={40}
           verticalSpacing="lg"
           w={"100mw"}
           sx={{ tableLayout: "fixed" }}
@@ -277,7 +518,6 @@ const ManageHumanModel = () => {
           >
             <tr>
               <th>Name</th>
-              <th>Shoulder</th>
               <th>Chest Width</th>
               <th>Height</th>
               <th>Bust</th>
@@ -286,21 +526,7 @@ const ManageHumanModel = () => {
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody>
-            {rows !== null ? (
-              rows.length > 0 ? (
-                rows
-              ) : (
-                <tr>
-                  <td>
-                    <Text weight={500} align="center">
-                      Nothing found
-                    </Text>
-                  </td>
-                </tr>
-              )
-            ) : null}
-          </tbody>
+          <tbody>{rows}</tbody>
         </Table>
       </ScrollArea>
     </>

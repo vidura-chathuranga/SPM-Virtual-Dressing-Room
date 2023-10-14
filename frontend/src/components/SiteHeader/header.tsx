@@ -238,8 +238,8 @@ const SiteHeader = () => {
             <a href="#" className={classes.link}>
               Learn
             </a>
-            <a href="#" className={classes.link}>
-              Academy
+            <a href="/garment/customize" className={classes.link}>
+              Customizer
             </a>
           </Group>
           {!user && (

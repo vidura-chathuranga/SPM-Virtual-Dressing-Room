@@ -1,18 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { useAuthContextAdmin } from "../../hooks/useAuthContextAdmin";
 import { SimpleGrid } from "@mantine/core";
 import ImageView from "./imageView";
 import Item from "./item";
+import { useAuthContext } from "../../hooks/useAuthContext";
 
 const ViewItem = () =>{
     const {id} = useParams();
-    const {admin} : any = useAuthContextAdmin();
+    const {user} : any = useAuthContext();
 
     // item details fetch by its Id
     const fetchItemById = async()=>{
-        return axios.get(`http://localhost:3001/items/${id}`,{headers : {Authorization : `Bearer ${admin.accessToken}`}});
+        return axios.get(`http://localhost:3001/items/${id}`,{headers : {Authorization : `Bearer ${user.accessToken}`}});
     }
 
     // fetching the item details
