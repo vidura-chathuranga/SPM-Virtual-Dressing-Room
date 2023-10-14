@@ -123,7 +123,7 @@ const AdminSideNavBar = ({ link_id }: any) => {
 
   return (
     <Navbar
-      height={"100vh"}
+      height={"100%"}
       width={{ base: 80 }}
       p="md"
       sx={(theme) => ({
