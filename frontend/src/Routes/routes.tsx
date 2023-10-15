@@ -16,6 +16,8 @@ import DecideNav from "../components/decideNav/decideNav";
 import ManageHumanModelPage from "../pages/manageHumanModelPage";
 import AdminFinance from "../pages/adminDashboardFinance";
 import ViewItemPage from "../pages/viewItemPage";
+import Customizer from "../components/customizer/customizer";
+import ViewHumanModel from "../components/viewHumanModel/viewHumanModel";
 
 
 const AllRoutes = () => {
@@ -34,6 +36,7 @@ const AllRoutes = () => {
             element={!user ? <LoginPage /> : <Navigate to={"/"} />}
           />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/garment/customize" element={<Customizer/>}/>
 
           {/* admin Routes */}
           <Route
@@ -72,6 +75,7 @@ const AllRoutes = () => {
             path="/view/item/:id"
             element={user ? <ViewItemPage /> : <Navigate to={"/"} />}
           />
+          <Route path="/view/human/:url" element={<ViewHumanModel/>}/>
         </Routes>
       </Router>
     </QueryClientProvider>

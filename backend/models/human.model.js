@@ -7,11 +7,6 @@ const humanSchema = new mongoose.Schema({
         type : String,
         required : true,
     },
-    shoulder : {
-        type : Number,
-        required : true,
-
-    },
     chestWidth :{
         type : Number,
         required : true,
@@ -45,7 +40,7 @@ const humanSchema = new mongoose.Schema({
         type : String,
         required : true
     }
-});
+},{timestamps : true});
 
 
 const Human = mongoose.model("Human",humanSchema);
