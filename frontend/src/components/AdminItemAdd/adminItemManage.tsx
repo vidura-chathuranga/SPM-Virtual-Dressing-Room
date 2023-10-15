@@ -409,9 +409,10 @@ const AdminItemAdd = () => {
             required
             {...editItemForm.getInputProps("actualPrice")}
           />
-          <NumberInput
+          <TextInput
             label={"Quantity"}
             mb={10}
+            type="number"
             required
             {...editItemForm.getInputProps("quantity")}
           />
@@ -454,9 +455,10 @@ const AdminItemAdd = () => {
             required
             {...addItemForm.getInputProps("actualPrice")}
           />
-          <NumberInput
+          <TextInput
             label={"Quantity"}
             mb={10}
+            type="number"
             required
             {...addItemForm.getInputProps("quantity")}
           />
