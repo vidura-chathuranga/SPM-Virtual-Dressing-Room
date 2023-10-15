@@ -314,17 +314,6 @@ const SiteHeader = () => {
                 </Button>
               </Group>
             )}
-            {!user && (
-              <Group className={classes.hiddenMobile}>
-                <Button variant="default" component="a" href="/login">
-                  Log in
-                </Button>
-                <Button component="a" href="/register">
-                  Sign up
-                </Button>
-              </Group>
-            )}
-
             {user && (
               <Flex align="center">
                 <ActionIcon
