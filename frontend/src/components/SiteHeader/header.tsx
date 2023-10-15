@@ -15,6 +15,7 @@ import {
   Burger,
   rem,
   Avatar,
+  Image,
   ActionIcon,
   Flex,
   Menu,
@@ -37,6 +38,7 @@ import {
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { useLogout } from "../../hooks/useLogout";
 import { showNotification } from "@mantine/notifications";
+import logo from '../../assets/VDS_LOGO_H.png';
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
 import Cart from "../Cart";
