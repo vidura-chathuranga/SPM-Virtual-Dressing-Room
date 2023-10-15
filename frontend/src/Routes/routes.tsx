@@ -9,16 +9,16 @@ import { useAuthContext } from "../hooks/useAuthContext";
 import RegisterPage from "../pages/registerPage";
 import HomePage from "../pages/homePage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import AdminLogin from "../pages/adminLogin";
+import UserProfile from "../components/UserProfile";
+import DecideNav from "../components/decideNav/decideNav";
 import { useAuthContextAdmin } from "../hooks/useAuthContextAdmin";
 import AdminDashboard from "../pages/adminDashboardAddItem";
-import DecideNav from "../components/decideNav/decideNav";
-import ManageHumanModelPage from "../pages/manageHumanModelPage";
 import AdminFinance from "../pages/adminDashboardFinance";
+import AdminLogin from "../pages/adminLogin";
+import ManageHumanModelPage from "../pages/manageHumanModelPage";
 import ViewItemPage from "../pages/viewItemPage";
 import Customizer from "../components/customizer/customizer";
 import ViewHumanModel from "../components/viewHumanModel/viewHumanModel";
-
 
 const AllRoutes = () => {
   const { user } = useAuthContext();
@@ -35,8 +35,15 @@ const AllRoutes = () => {
             path="/login"
             element={!user ? <LoginPage /> : <Navigate to={"/"} />}
           />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/garment/customize" element={<Customizer/>}/>
+          <Route
+            path="/register"
+            element={!user ? <RegisterPage /> : <Navigate to={"/"} />}
+          />
+          <Route
+            path="/profile"
+            element={user ? <UserProfile /> : <Navigate to={"/login"} />}
+          />
+          <Route path="/garment/customize" element={<Customizer />} />
 
           {/* admin Routes */}
           <Route
@@ -75,7 +82,7 @@ const AllRoutes = () => {
             path="/view/item/:id"
             element={user ? <ViewItemPage /> : <Navigate to={"/"} />}
           />
-          <Route path="/view/human/:url" element={<ViewHumanModel/>}/>
+          <Route path="/view/human/:url" element={<ViewHumanModel />} />
         </Routes>
       </Router>
     </QueryClientProvider>
