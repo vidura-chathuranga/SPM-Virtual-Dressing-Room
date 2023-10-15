@@ -16,6 +16,11 @@ import {
   rem,
   Avatar,
   Image,
+  ActionIcon,
+  Flex,
+  Menu,
+  Drawer,
+  Title,
 } from "@mantine/core";
 import {
   IconNotification,
@@ -26,11 +31,18 @@ import {
   IconCoin,
   IconChevronDown,
   IconCheck,
+  IconLogout,
+  IconShoppingCart,
+  IconUser,
 } from "@tabler/icons-react";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { useLogout } from "../../hooks/useLogout";
 import { showNotification } from "@mantine/notifications";
 import logo from '../../assets/VDS_LOGO_H.png';
+import { useDisclosure } from "@mantine/hooks";
+import { useState } from "react";
+import Cart from "../Cart";
+import { useNavigate } from "react-router";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -99,6 +111,27 @@ const useStyles = createStyles((theme) => ({
       display: "none",
     },
   },
+
+  user: {
+    color: theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
+    padding: `${theme.spacing.xs} ${theme.spacing.sm}`,
+    borderRadius: theme.radius.sm,
+    transition: "background-color 100ms ease",
+
+    "&:hover": {
+      backgroundColor:
+        theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
+    },
+
+    [theme.fn.smallerThan("xs")]: {
+      display: "none",
+    },
+  },
+
+  userActive: {
+    backgroundColor:
+      theme.colorScheme === "dark" ? theme.colors.dark[8] : theme.white,
+  },
 }));
 
 const mockdata = [
@@ -135,10 +168,13 @@ const mockdata = [
 ];
 
 const SiteHeader = () => {
+  const navigate = useNavigate();
   const { user }: any = useAuthContext();
   const { logout } = useLogout();
+  const [userMenuOpened, setUserMenuOpened] = useState(false);
+  const [opened, { open, close }] = useDisclosure(false);
 
-  const { classes, theme } = useStyles();
+  const { classes, theme, cx } = useStyles();
 
   const links = mockdata.map((item) => (
     <UnstyledButton className={classes.subLink} key={item.title}>
@@ -170,111 +206,162 @@ const SiteHeader = () => {
     });
   };
   return (
-    <Box pb={20}>
-      <Header height={60} px="md">
-        <Group position="apart" sx={{ height: "100%" }}>
-          <Image src={logo} height={40} width={130}/>
+    <>
+      <Drawer
+        position="right"
+        opened={opened}
+        onClose={close}
+        title={<Title order={3}>Your Cart</Title>}
+      >
+        <Cart />
+      </Drawer>
+      <Box pb={20}>
+        <Header height={60} px="md">
+          <Group position="apart" sx={{ height: "100%" }}>
+            {/* <MantineLogo size={30} /> */}
 
-          <Group
-            sx={{ height: "100%" }}
-            spacing={0}
-            className={classes.hiddenMobile}
-          >
-            <a href="#" className={classes.link}>
-              Home
-            </a>
-            <HoverCard
-              width={600}
-              position="bottom"
-              radius="md"
-              shadow="md"
-              withinPortal
+            <Group
+              sx={{ height: "100%" }}
+              spacing={0}
+              className={classes.hiddenMobile}
             >
-              <HoverCard.Target>
-                <a href="#" className={classes.link}>
-                  <Center inline>
-                    <Box component="span" mr={5}>
-                      Features
-                    </Box>
-                    <IconChevronDown
-                      size={16}
-                      color={theme.fn.primaryColor()}
-                    />
-                  </Center>
-                </a>
-              </HoverCard.Target>
-
-              <HoverCard.Dropdown sx={{ overflow: "hidden" }}>
-                <Group position="apart" px="md">
-                  <Text fw={500}>Features</Text>
-                  <Anchor href="#" fz="xs">
-                    View all
-                  </Anchor>
-                </Group>
-
-                <Divider
-                  my="sm"
-                  mx="-md"
-                  color={theme.colorScheme === "dark" ? "dark.5" : "gray.1"}
-                />
-
-                <SimpleGrid cols={2} spacing={0}>
-                  {links}
-                </SimpleGrid>
-
-                <div className={classes.dropdownFooter}>
-                  <Group position="apart">
-                    <div>
-                      <Text fw={500} fz="sm">
-                        Get started
-                      </Text>
-                      <Text size="xs" color="dimmed">
-                        Their food sources have decreased, and their numbers
-                      </Text>
-                    </div>
-                    <Button variant="default">Get started</Button>
-                  </Group>
-                </div>
-              </HoverCard.Dropdown>
-            </HoverCard>
-            <a href="#" className={classes.link}>
-              Learn
-            </a>
-            <a href="/garment/customize" className={classes.link}>
-              Customizer
-            </a>
-          </Group>
-          {!user && (
-            <Group className={classes.hiddenMobile}>
-              <Button variant="default" component="a" href="/login">
-                Log in
-              </Button>
-              <Button component="a" href="/register">
-                Sign up
-              </Button>
-            </Group>
-          )}
-
-          {user && (
-            <Group spacing={"lg"}>
-              <Avatar radius={"100%"} color="cyan">
-                {user.firstName[0]}
-              </Avatar>
-              <Text weight={500}>{`Hello, ${user.firstName}`}</Text>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  logout();
-                  displayNotification();
-                }}
+              <a href="#" className={classes.link}>
+                Home
+              </a>
+              <HoverCard
+                width={600}
+                position="bottom"
+                radius="md"
+                shadow="md"
+                withinPortal
               >
-                Logout
-              </Button>
+                <HoverCard.Target>
+                  <a href="#" className={classes.link}>
+                    <Center inline>
+                      <Box component="span" mr={5}>
+                        Features
+                      </Box>
+                      <IconChevronDown
+                        size={16}
+                        color={theme.fn.primaryColor()}
+                      />
+                    </Center>
+                  </a>
+                </HoverCard.Target>
+
+                <HoverCard.Dropdown sx={{ overflow: "hidden" }}>
+                  <Group position="apart" px="md">
+                    <Text fw={500}>Features</Text>
+                    <Anchor href="#" fz="xs">
+                      View all
+                    </Anchor>
+                  </Group>
+
+                  <Divider
+                    my="sm"
+                    mx="-md"
+                    color={theme.colorScheme === "dark" ? "dark.5" : "gray.1"}
+                  />
+
+                  <SimpleGrid cols={2} spacing={0}>
+                    {links}
+                  </SimpleGrid>
+
+                  <div className={classes.dropdownFooter}>
+                    <Group position="apart">
+                      <div>
+                        <Text fw={500} fz="sm">
+                          Get started
+                        </Text>
+                        <Text size="xs" color="dimmed">
+                          Their food sources have decreased, and their numbers
+                        </Text>
+                      </div>
+                      <Button variant="default">Get started</Button>
+                    </Group>
+                  </div>
+                </HoverCard.Dropdown>
+              </HoverCard>
+              <a href="#" className={classes.link}>
+                Learn
+              </a>
+              <a href="/garment/customize" className={classes.link}>
+                Customizer
+              </a>
             </Group>
-          )}
-        </Group>
-      </Header>
-    </Box>
+            {!user && (
+              <Group className={classes.hiddenMobile}>
+                <Button variant="default" component="a" href="/login">
+                  Log in
+                </Button>
+                <Button component="a" href="/register">
+                  Sign up
+                </Button>
+              </Group>
+            )}
+
+            {user && (
+              <Flex align="center">
+                <ActionIcon
+                  variant="outline"
+                  color="teal"
+                  size={30}
+                  onClick={open}
+                >
+                  <IconShoppingCart color="teal" size={20} />
+                </ActionIcon>
+                <Menu
+                  position="bottom-end"
+                  transitionProps={{ transition: "pop-top-right" }}
+                  onClose={() => setUserMenuOpened(false)}
+                  onOpen={() => setUserMenuOpened(true)}
+                  withinPortal
+                >
+                  <Menu.Target>
+                    <UnstyledButton
+                      className={cx(classes.user, {
+                        [classes.userActive]: userMenuOpened,
+                      })}
+                    >
+                      <Group spacing={7}>
+                        <Avatar radius={"100%"} color="cyan">
+                          {user.firstName[0]}
+                        </Avatar>
+                        <Text
+                          weight={600}
+                          size="lg"
+                          sx={{ lineHeight: 1.5 }}
+                          mr={3}
+                        >
+                          {`Hello, ${user.firstName}!`}
+                        </Text>
+                        <IconChevronDown size={rem(12)} stroke={1.5} />
+                      </Group>
+                    </UnstyledButton>
+                  </Menu.Target>
+                  <Menu.Dropdown>
+                    <Menu.Label>Settings</Menu.Label>
+                    <Menu.Divider />
+                    <Menu.Item
+                      icon={<IconUser size="0.9rem" stroke={1.5} />}
+                      onClick={() => navigate("/profile")}
+                    >
+                      Your profile
+                    </Menu.Item>
+                    <Menu.Item
+                      icon={<IconLogout size="0.9rem" stroke={1.5} />}
+                      onClick={logout}
+                    >
+                      Logout
+                    </Menu.Item>
+                  </Menu.Dropdown>
+                </Menu>
+              </Flex>
+            )}
+          </Group>
+        </Header>
+      </Box>
+    </>
   );
 };
 

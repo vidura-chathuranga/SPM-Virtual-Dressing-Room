@@ -1,4 +1,4 @@
-import { LoadingOverlay, Rating, SimpleGrid } from "@mantine/core";
+import { Button, LoadingOverlay, Rating, SimpleGrid } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {
@@ -14,8 +14,10 @@ import {
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { Carousel } from "@mantine/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { useRef } from "react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useContext, useRef } from "react";
+import { IconShoppingCartPlus } from "@tabler/icons-react";
+import { CartContext, CartItem } from "../../contexts/CartContext";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
   price: {
@@ -48,11 +50,23 @@ const useStyles = createStyles((theme) => ({
 }));
 
 const ItemShowCase = () => {
+  const { dispatch } = useContext(CartContext);
   const { user }: any = useAuthContext();
   const { classes } = useStyles();
   const autoplays: any = useRef();
   autoplays.current = [];
   const navigate = useNavigate();
+
+  const addToCart = (item: any) => {
+    const cartItem: CartItem = {
+      id: item._id,
+      image: item.images[0],
+      name: item.title,
+      price: item.sellingPrice,
+      quantity: 1,
+    };
+    dispatch({ type: "ADD_TO_CART", payload: cartItem });
+  };
 
   const fetchItems = () => {
     return axios.get("http://localhost:3001/items/");
@@ -73,8 +87,8 @@ const ItemShowCase = () => {
     style: "currency",
     currency: "LKR",
   });
-  
-//   generate item cards
+
+  //   generate item cards
   const items = data.map((item: any, index: any) => (
     <div key={item._id}>
       <Card
@@ -82,14 +96,16 @@ const ItemShowCase = () => {
         padding="lg"
         radius="md"
         withBorder
-        style={{cursor : "pointer"}}
-        onClick={() => {navigate(`/view/item/${item._id}`);}}
+        style={{ cursor: "pointer" }}
+        onClick={() => {
+          navigate(`/view/item/${item._id}`);
+        }}
       >
         <Card.Section>
           <Carousel
             loop
             withIndicators
-            withControls = {false}
+            withControls={false}
             plugins={[autoplays.current[index]]}
             onMouseEnter={autoplays.current[index].stop}
             onMouseLeave={autoplays.current[index].reset}
@@ -106,7 +122,7 @@ const ItemShowCase = () => {
             ))}
           </Carousel>
         </Card.Section>
-        <Rating value={item.rating} fractions={2} readOnly size="xs" mt={10}/>
+        <Rating value={item.rating} fractions={2} readOnly size="xs" mt={10} />
         <Group position="apart" mt="md" mb="xs">
           <Text weight={500}>{item.title}</Text>
           <Badge color="pink" variant="light">
@@ -119,16 +135,28 @@ const ItemShowCase = () => {
         </Text>
 
         <Group mt={10} position="apart">
-          <Text weight={500} color="blue" size={22}>{rupee.format(item.sellingPrice)}</Text>
+          <Text weight={500} color="blue" size={22}>
+            {rupee.format(item.sellingPrice)}
+          </Text>
+          <Button
+            variant="outline"
+            color="blue"
+            size="sm"
+            onClick={() => {
+              addToCart(item);
+            }}
+          >
+            <IconShoppingCartPlus />
+            Add to Cart
+          </Button>
         </Group>
       </Card>
     </div>
   ));
 
-
   return (
     <SimpleGrid cols={3} spacing={"xl"} px={120} py={40}>
-      <LoadingOverlay visible={isLoading} overlayBlur={2}/>
+      <LoadingOverlay visible={isLoading} overlayBlur={2} />
       {items}
     </SimpleGrid>
   );
