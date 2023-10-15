@@ -15,6 +15,7 @@ import {
   Burger,
   rem,
   Avatar,
+  Image,
 } from "@mantine/core";
 import {
   IconNotification,
@@ -29,6 +30,7 @@ import {
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { useLogout } from "../../hooks/useLogout";
 import { showNotification } from "@mantine/notifications";
+import logo from '../../assets/VDS_LOGO_H.png';
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -171,7 +173,7 @@ const SiteHeader = () => {
     <Box pb={20}>
       <Header height={60} px="md">
         <Group position="apart" sx={{ height: "100%" }}>
-          {/* <MantineLogo size={30} /> */}
+          <Image src={logo} height={40} width={130}/>
 
           <Group
             sx={{ height: "100%" }}
