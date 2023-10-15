@@ -30,6 +30,8 @@ import {
 import { useForm } from "@mantine/form";
 import { showNotification, updateNotification } from "@mantine/notifications";
 import { useNavigate } from "react-router-dom";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import HumanPDF from "../humanModelPDF/humanModelPDF";
 
 const useStyles = createStyles((theme) => ({
   tableHeader: {
@@ -494,9 +496,13 @@ const ManageHumanModel = () => {
         <Button leftIcon={<IconPlus />} onClick={() => setOpened(true)}>
           Add Model
         </Button>
+        <PDFDownloadLink
+              document={<HumanPDF data={data} />}
+              fileName={`HumanModelReport - ${new Date().toLocaleDateString('en-CA')}`}
+            >
         <Button leftIcon={<IconClipboardData />} color="red">
           Generate Document
-        </Button>
+        </Button></PDFDownloadLink>
       </Group>
       <ScrollArea
         w={"100mw"}
