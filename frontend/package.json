@@ -12,6 +12,7 @@
     "@mantine/hooks": "^6.0.20",
     "@mantine/modals": "^6.0.20",
     "@mantine/notifications": "^6.0.20",
+    "@react-pdf/renderer": "^3.1.13",
     "@react-three/drei": "^9.88.2",
     "@react-three/fiber": "^8.14.5",
     "@tabler/icons-react": "^2.34.0",
