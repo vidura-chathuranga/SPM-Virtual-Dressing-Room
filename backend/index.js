@@ -7,7 +7,6 @@ import ItemsRoutes from "./routes/items.routes.js";
 import AdminRoutes from "./routes/admin.routes.js";
 import HumanModelRoutes from "./routes/humanModel.routes.js";
 import InvoiceRoutes from "./routes/invoices.routes.js";
-import ItemsRoutes from "./routes/items.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
 
 // initialize the express

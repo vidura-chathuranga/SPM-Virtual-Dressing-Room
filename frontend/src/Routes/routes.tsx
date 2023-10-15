@@ -8,7 +8,6 @@ import LoginPage from "../pages/loginPage";
 import { useAuthContext } from "../hooks/useAuthContext";
 import RegisterPage from "../pages/registerPage";
 import HomePage from "../pages/homePage";
-import SiteHeader from "../components/SiteHeader/header";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import UserProfile from "../components/UserProfile";
 import DecideNav from "../components/decideNav/decideNav";
@@ -27,7 +26,6 @@ const AllRoutes = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
-        <SiteHeader />
         <DecideNav />
         <Routes>
           <Route path="/" element={<HomePage />} />
