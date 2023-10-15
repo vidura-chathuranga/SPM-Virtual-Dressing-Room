@@ -12,15 +12,15 @@ import {
   Divider,
   Center,
   Box,
+  Burger,
   rem,
   Avatar,
-  Menu,
-  Drawer,
   ActionIcon,
   Flex,
+  Menu,
+  Drawer,
   Title,
 } from "@mantine/core";
-//   import { MantineLogo } from '@mantine/ds';
 import {
   IconNotification,
   IconCode,
@@ -29,18 +29,18 @@ import {
   IconFingerprint,
   IconCoin,
   IconChevronDown,
-  IconLogout,
-  IconUser,
-  IconShoppingCart,
   IconCheck,
+  IconLogout,
+  IconShoppingCart,
+  IconUser,
 } from "@tabler/icons-react";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { useLogout } from "../../hooks/useLogout";
-import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useDisclosure } from "@mantine/hooks";
-import Cart from "../Cart";
 import { showNotification } from "@mantine/notifications";
+import { useDisclosure } from "@mantine/hooks";
+import { useState } from "react";
+import Cart from "../Cart";
+import { useNavigate } from "react-router";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -109,6 +109,7 @@ const useStyles = createStyles((theme) => ({
       display: "none",
     },
   },
+
   user: {
     color: theme.colorScheme === "dark" ? theme.colors.dark[0] : theme.black,
     padding: `${theme.spacing.xs} ${theme.spacing.sm}`,
@@ -222,9 +223,9 @@ const SiteHeader = () => {
               spacing={0}
               className={classes.hiddenMobile}
             >
-              <Link to="#" className={classes.link}>
+              <a href="#" className={classes.link}>
                 Home
-              </Link>
+              </a>
               <HoverCard
                 width={600}
                 position="bottom"
@@ -233,7 +234,7 @@ const SiteHeader = () => {
                 withinPortal
               >
                 <HoverCard.Target>
-                  <Link to="#" className={classes.link}>
+                  <a href="#" className={classes.link}>
                     <Center inline>
                       <Box component="span" mr={5}>
                         Features
@@ -243,7 +244,7 @@ const SiteHeader = () => {
                         color={theme.fn.primaryColor()}
                       />
                     </Center>
-                  </Link>
+                  </a>
                 </HoverCard.Target>
 
                 <HoverCard.Dropdown sx={{ overflow: "hidden" }}>
@@ -282,8 +283,8 @@ const SiteHeader = () => {
               <a href="#" className={classes.link}>
                 Learn
               </a>
-              <a href="#" className={classes.link}>
-                Academy
+              <a href="/garment/customize" className={classes.link}>
+                Customizer
               </a>
             </Group>
             {!user && (
@@ -297,23 +298,6 @@ const SiteHeader = () => {
               </Group>
             )}
 
-            {user && (
-              <Group spacing={"lg"}>
-                <Avatar radius={"100%"} color="cyan">
-                  {user.firstName[0]}
-                </Avatar>
-                <Text weight={500}>{`Hello, ${user.firstName}`}</Text>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    logout();
-                    displayNotification();
-                  }}
-                >
-                  Logout
-                </Button>
-              </Group>
-            )}
             {user && (
               <Flex align="center">
                 <ActionIcon

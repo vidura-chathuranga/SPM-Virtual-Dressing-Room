@@ -8,6 +8,9 @@ import AdminRoutes from "./routes/admin.routes.js";
 import HumanModelRoutes from "./routes/humanModel.routes.js";
 import InvoiceRoutes from "./routes/invoices.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
+import path from "path";
+import { dirname } from "path";
+import { fileURLToPath } from "url";
 
 // initialize the express
 const app = express();
@@ -32,6 +35,11 @@ app.use((req, res, next) => {
 app.get("/", (req, res) => {
   res.send("<h1>VIRTURAL DRESSING ROOM API</h1>");
 });
+
+// human model file path
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+app.use(express.static(path.resolve(__dirname, "./files")));
 
 // request redirect to the user routes
 app.use("/user", userRoutes);

@@ -17,6 +17,8 @@ import AdminFinance from "../pages/adminDashboardFinance";
 import AdminLogin from "../pages/adminLogin";
 import ManageHumanModelPage from "../pages/manageHumanModelPage";
 import ViewItemPage from "../pages/viewItemPage";
+import Customizer from "../components/customizer/customizer";
+import ViewHumanModel from "../components/viewHumanModel/viewHumanModel";
 
 const AllRoutes = () => {
   const { user } = useAuthContext();
@@ -37,15 +39,11 @@ const AllRoutes = () => {
             path="/register"
             element={!user ? <RegisterPage /> : <Navigate to={"/"} />}
           />
-
-          <Route
-            path="/"
-            element={user ? <HomePage /> : <Navigate to={"/login"} />}
-          />
           <Route
             path="/profile"
             element={user ? <UserProfile /> : <Navigate to={"/login"} />}
           />
+          <Route path="/garment/customize" element={<Customizer />} />
 
           {/* admin Routes */}
           <Route
@@ -84,6 +82,7 @@ const AllRoutes = () => {
             path="/view/item/:id"
             element={user ? <ViewItemPage /> : <Navigate to={"/"} />}
           />
+          <Route path="/view/human/:url" element={<ViewHumanModel />} />
         </Routes>
       </Router>
     </QueryClientProvider>
