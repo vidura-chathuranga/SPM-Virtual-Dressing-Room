@@ -24,6 +24,7 @@ import { useForm } from "@mantine/form";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import userService from "../../services/userService";
 import { showNotification, updateNotification } from "@mantine/notifications";
+import PaymentInfo from "../PaymentInfo";
 
 function PasswordRequirement({
   meets,
@@ -258,115 +259,117 @@ const UserProfile: React.FC = () => {
     ));
 
   return (
-    <Flex align="start" gap={20} mt={20} w={"80%"} m={"auto"}>
-      <Card withBorder radius={"lg"} w={"500px"} mx={"auto"} shadow="xl">
-        <Card.Section withBorder p={10}>
-          <Text size={20} weight={500} ta={"center"}>
-            Edit Profile
-          </Text>
-        </Card.Section>
-        <Card.Section p={30}>
-          <form
-            onSubmit={editForm.onSubmit((values) => {
-              handleUpdateProfileSubmit(values);
-            })}
-          >
-            <Stack>
-              <Group grow>
+    <>
+      <Flex align="start" gap={20} mt={20} w={"80%"} m={"auto"}>
+        <Card withBorder radius={"lg"} w={"500px"} mx={"auto"} shadow="xl">
+          <Card.Section withBorder p={10}>
+            <Text size={20} weight={500} ta={"center"}>
+              Edit Profile
+            </Text>
+          </Card.Section>
+          <Card.Section p={30}>
+            <form
+              onSubmit={editForm.onSubmit((values) => {
+                handleUpdateProfileSubmit(values);
+              })}
+            >
+              <Stack>
+                <Group grow>
+                  <TextInput
+                    required
+                    label="First Name"
+                    placeholder="David"
+                    {...editForm.getInputProps("firstName")}
+                  />
+                  <TextInput
+                    required
+                    label="Last Name"
+                    placeholder="Manel"
+                    {...editForm.getInputProps("lastName")}
+                  />
+                </Group>
+
                 <TextInput
+                  label={"Email"}
                   required
-                  label="First Name"
-                  placeholder="David"
-                  {...editForm.getInputProps("firstName")}
+                  withAsterisk
+                  icon={<IconMailFilled size={20} />}
+                  placeholder="devid@email.com"
+                  {...editForm.getInputProps("email")}
                 />
+
                 <TextInput
+                  type="number"
+                  placeholder="071-XXXXXX"
+                  icon={<IconPhone size={20} />}
+                  label={"Phone Number"}
+                  {...editForm.getInputProps("mobileNumber")}
                   required
-                  label="Last Name"
-                  placeholder="Manel"
-                  {...editForm.getInputProps("lastName")}
                 />
-              </Group>
 
-              <TextInput
-                label={"Email"}
-                required
-                withAsterisk
-                icon={<IconMailFilled size={20} />}
-                placeholder="devid@email.com"
-                {...editForm.getInputProps("email")}
-              />
+                <TextInput
+                  placeholder="No,12,Malabe,Kaduwela"
+                  label={"Shipping Address"}
+                  icon={<IconGardenCart size={20} />}
+                  {...editForm.getInputProps("shippingAddress")}
+                />
 
-              <TextInput
-                type="number"
-                placeholder="071-XXXXXX"
-                icon={<IconPhone size={20} />}
-                label={"Phone Number"}
-                {...editForm.getInputProps("mobileNumber")}
-                required
-              />
-
-              <TextInput
-                placeholder="No,12,Malabe,Kaduwela"
-                label={"Shipping Address"}
-                icon={<IconGardenCart size={20} />}
-                {...editForm.getInputProps("shippingAddress")}
-              />
-
-              <Button
-                fullWidth
-                loading={isUserLoading}
-                loaderPosition="center"
-                type="submit"
-              >
-                Save
-              </Button>
-            </Stack>
-          </form>
-        </Card.Section>
-      </Card>
-      <Card withBorder radius={"lg"} w={"500px"} mx={"auto"} shadow="xl">
-        <Card.Section withBorder p={10}>
-          <Text size={20} weight={500} ta={"center"}>
-            Change Password
-          </Text>
-        </Card.Section>
-        <Card.Section p={30}>
-          <form
-            onSubmit={userPasswordForm.onSubmit((values) => {
-              handleUserPasswordSubmit(values);
-            })}
-          >
-            <PasswordInput
-              placeholder="Your current password"
-              label="Current Password"
-              {...userPasswordForm.getInputProps("currentPassword")}
-            />
-            <PasswordInput
-              placeholder="Your New password"
-              label="New Password"
-              pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$&+,:;=?@#|'<>.^*()%!-]).{8,}"
-              {...userPasswordForm.getInputProps("password")}
-            />
-            <PasswordInput
-              placeholder="Confirm your password"
-              label="Confirm Password"
-              {...userPasswordForm.getInputProps("confirmPassword")}
-            />
-            <Group spacing={5} grow mt="xs" mb="md">
-              {bars}
-            </Group>
-            <PasswordRequirement
-              label="Has at least 8 characters"
-              meets={userPasswordForm.values.password.length > 7}
-            />
-            {checks}
-            <Button sx={{ marginTop: "10px", width: "100%" }} type="submit">
+                <Button
+                  fullWidth
+                  loading={isUserLoading}
+                  loaderPosition="center"
+                  type="submit"
+                >
+                  Save
+                </Button>
+              </Stack>
+            </form>
+          </Card.Section>
+        </Card>
+        <Card withBorder radius={"lg"} w={"500px"} mx={"auto"} shadow="xl">
+          <Card.Section withBorder p={10}>
+            <Text size={20} weight={500} ta={"center"}>
               Change Password
-            </Button>
-          </form>
-        </Card.Section>
-      </Card>
-    </Flex>
+            </Text>
+          </Card.Section>
+          <Card.Section p={30}>
+            <form
+              onSubmit={userPasswordForm.onSubmit((values) => {
+                handleUserPasswordSubmit(values);
+              })}
+            >
+              <PasswordInput
+                placeholder="Your current password"
+                label="Current Password"
+                {...userPasswordForm.getInputProps("currentPassword")}
+              />
+              <PasswordInput
+                placeholder="Your New password"
+                label="New Password"
+                pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$&+,:;=?@#|'<>.^*()%!-]).{8,}"
+                {...userPasswordForm.getInputProps("password")}
+              />
+              <PasswordInput
+                placeholder="Confirm your password"
+                label="Confirm Password"
+                {...userPasswordForm.getInputProps("confirmPassword")}
+              />
+              <Group spacing={5} grow mt="xs" mb="md">
+                {bars}
+              </Group>
+              <PasswordRequirement
+                label="Has at least 8 characters"
+                meets={userPasswordForm.values.password.length > 7}
+              />
+              {checks}
+              <Button sx={{ marginTop: "10px", width: "100%" }} type="submit">
+                Change Password
+              </Button>
+            </form>
+          </Card.Section>
+        </Card>
+      </Flex>
+    </>
   );
 };
 

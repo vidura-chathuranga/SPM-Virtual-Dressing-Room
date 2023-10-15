@@ -2,9 +2,15 @@ import { Box, Button, Flex, Text } from "@mantine/core";
 import { useContext } from "react";
 import { CartContext } from "../../contexts/CartContext";
 import CartItemComp from "./CartItem";
+import { useNavigate } from "react-router";
 
 const Cart: React.FC = () => {
+  const navigate = useNavigate();
   const { cart } = useContext(CartContext);
+
+  const getTotalPrice = () => {
+    return cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  };
 
   return (
     <Flex
@@ -23,7 +29,21 @@ const Cart: React.FC = () => {
           <CartItemComp key={item.id} item={item} />
         ))}
       </Box>
-      <Button fullWidth>Checkout</Button>
+      <Flex w={"100%"} direction={"column"} align={"center"}>
+        <Box>
+          <Text weight={600} size={"md"}>
+            Total Price: Rs.{getTotalPrice()}
+          </Text>
+        </Box>
+        <Button
+          onClick={() => {
+            navigate("/checkout");
+          }}
+          fullWidth
+        >
+          Checkout
+        </Button>
+      </Flex>
     </Flex>
   );
 };

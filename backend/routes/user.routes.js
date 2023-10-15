@@ -5,6 +5,10 @@ import {
   getUserById,
   updateUserById,
   updatePassword,
+  getPaymentInfoByUserId,
+  updatePaymentInfoByUserId,
+  getClientToken,
+  makePayment,
 } from "../controllers/userController.js";
 
 // express router
@@ -24,5 +28,17 @@ router.put("/:id", updateUserById);
 
 //update password
 router.put("/:id/password", updatePassword);
+
+//get payment info
+router.get("/:id/paymentinfo", getPaymentInfoByUserId);
+
+//update payment info
+router.patch("/:id/paymentinfo", updatePaymentInfoByUserId);
+
+//make payment by student id and batch id
+router.post("/:id/payment", makePayment);
+
+//get payment token
+router.get("/:id/payment/token", getClientToken);
 
 export default router;

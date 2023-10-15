@@ -8,6 +8,7 @@ import AdminRoutes from "./routes/admin.routes.js";
 import HumanModelRoutes from "./routes/humanModel.routes.js";
 import InvoiceRoutes from "./routes/invoices.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
+import responseHandler from "./utils/response.handler.js";
 import path from "path";
 import { dirname } from "path";
 import { fileURLToPath } from "url";
@@ -25,6 +26,12 @@ app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 
 app.use(express.urlencoded({ extended: false }));
+
+// Inject Response Handler
+app.use((req, res, next) => {
+  req.handleResponse = responseHandler;
+  next();
+});
 
 // logged every request to the server terminal
 app.use((req, res, next) => {

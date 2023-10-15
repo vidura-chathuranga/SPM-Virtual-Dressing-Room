@@ -12,7 +12,6 @@ import {
   Divider,
   Center,
   Box,
-  Burger,
   rem,
   Avatar,
   ActionIcon,
@@ -33,6 +32,7 @@ import {
   IconLogout,
   IconShoppingCart,
   IconUser,
+  IconCreditCard,
 } from "@tabler/icons-react";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { useLogout } from "../../hooks/useLogout";
@@ -223,7 +223,7 @@ const SiteHeader = () => {
               spacing={0}
               className={classes.hiddenMobile}
             >
-              <a href="#" className={classes.link}>
+              <a href="/" className={classes.link}>
                 Home
               </a>
               <HoverCard
@@ -297,7 +297,6 @@ const SiteHeader = () => {
                 </Button>
               </Group>
             )}
-
             {user && (
               <Flex align="center">
                 <ActionIcon
@@ -345,6 +344,12 @@ const SiteHeader = () => {
                       onClick={() => navigate("/profile")}
                     >
                       Your profile
+                    </Menu.Item>
+                    <Menu.Item
+                      icon={<IconCreditCard size="0.9rem" stroke={1.5} />}
+                      onClick={() => navigate("/payment-info")}
+                    >
+                      Payment info
                     </Menu.Item>
                     <Menu.Item
                       icon={<IconLogout size="0.9rem" stroke={1.5} />}

@@ -19,6 +19,8 @@ import ManageHumanModelPage from "../pages/manageHumanModelPage";
 import ViewItemPage from "../pages/viewItemPage";
 import Customizer from "../components/customizer/customizer";
 import ViewHumanModel from "../components/viewHumanModel/viewHumanModel";
+import PaymentInfo from "../components/PaymentInfo";
+import Checkout from "../components/Checkout";
 
 const AllRoutes = () => {
   const { user } = useAuthContext();
@@ -43,6 +45,15 @@ const AllRoutes = () => {
             path="/profile"
             element={user ? <UserProfile /> : <Navigate to={"/login"} />}
           />
+          <Route
+            path="/payment-info"
+            element={user ? <PaymentInfo /> : <Navigate to={"/login"} />}
+          />
+          <Route
+            path="/checkout"
+            element={user ? <Checkout /> : <Navigate to={"/login"} />}
+          />
+
           <Route path="/garment/customize" element={<Customizer />} />
 
           {/* admin Routes */}

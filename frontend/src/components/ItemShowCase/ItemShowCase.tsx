@@ -96,10 +96,10 @@ const ItemShowCase = () => {
         padding="lg"
         radius="md"
         withBorder
-        style={{ cursor: "pointer" }}
-        onClick={() => {
-          navigate(`/view/item/${item._id}`);
-        }}
+        //style={{ cursor: "pointer" }}
+        // onClick={() => {
+        //   navigate(`/view/item/${item._id}`);
+        // }}
       >
         <Card.Section>
           <Carousel
@@ -142,7 +142,8 @@ const ItemShowCase = () => {
             variant="outline"
             color="blue"
             size="sm"
-            onClick={() => {
+            onClick={(event) => {
+              event.preventDefault();
               addToCart(item);
             }}
           >

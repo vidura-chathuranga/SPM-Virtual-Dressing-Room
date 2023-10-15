@@ -36,6 +36,42 @@ const userService = {
     });
     return response.data;
   },
+  getPaymentInfoByUserId: (id: string, token: string) => {
+    return axios.get(`${baseUrl}/${id}/paymentInfo`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
+  updatePaymentInfo: (id: string, token: string, info: string) => {
+    return axios.patch(
+      `${baseUrl}/${id}/paymentInfo`,
+      { info: info },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  },
+  getPaymentTokenByUserId: (id: string, token: string) => {
+    return axios.get(`${baseUrl}/${id}/payment/token`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  },
+  processPayment: (order: any, nonce: string, token: string) => {
+    return axios.post(
+      `${baseUrl}/${order.user}/payment`,
+      { order: order, nonce: nonce },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+  },
 };
 
 export default userService;
