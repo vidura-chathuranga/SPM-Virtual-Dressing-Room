@@ -32,6 +32,8 @@ import {
 import { useForm } from "@mantine/form";
 import { showNotification, updateNotification } from "@mantine/notifications";
 import { Dropzone, IMAGE_MIME_TYPE, FileWithPath } from "@mantine/dropzone";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import ItemPDF from "../ItemPDFTemplate/ItemPDF";
 
 const useStyles = createStyles((theme) => ({
   tableHeader: {
@@ -119,6 +121,9 @@ const AdminItemAdd = () => {
       })
       .then((res) => res.data)
   );
+    
+  // search any field
+  const[search,setSearch] = useState('');
 
   // delete item
   const deleteItem = (_id: string) => {
@@ -479,15 +484,19 @@ const AdminItemAdd = () => {
           mb={50}
           icon={<IconSearch size="0.9rem" stroke={1.5} />}
           // value={search}
-          // onChange={handleSearchChange}
+          onChange={(e) => setSearch(e.target.value)}
           w={"70%"}
         />
         <Button leftIcon={<IconPlus />} onClick={() => setOpened(true)}>
           Add Item
         </Button>
+        <PDFDownloadLink
+              document={<ItemPDF data={data} />}
+              fileName={`ItemDetails - ${new Date().toLocaleDateString('en-CA')}`}
+            >
         <Button leftIcon={<IconClipboardData />} color="red">
           Generate Report
-        </Button>
+        </Button></PDFDownloadLink>
       </Group>
       <ScrollArea
         w={"100mw"}
