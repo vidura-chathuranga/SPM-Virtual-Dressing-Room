@@ -32,6 +32,7 @@ import {
   IconLogout,
   IconUser,
   IconShoppingCart,
+  IconCheck,
 } from "@tabler/icons-react";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { useLogout } from "../../hooks/useLogout";
@@ -39,6 +40,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useDisclosure } from "@mantine/hooks";
 import Cart from "../Cart";
+import { showNotification } from "@mantine/notifications";
 
 const useStyles = createStyles((theme) => ({
   link: {
@@ -189,6 +191,17 @@ const SiteHeader = () => {
     </UnstyledButton>
   ));
 
+  const displayNotification = () => {
+    showNotification({
+      title: "logged out",
+      message: "you have successfully logged out",
+      color: "teal",
+      icon: <IconCheck />,
+      autoClose: true,
+      withCloseButton: true,
+      withBorder: true,
+    });
+  };
   return (
     <>
       <Drawer
@@ -266,7 +279,41 @@ const SiteHeader = () => {
                   </div>
                 </HoverCard.Dropdown>
               </HoverCard>
+              <a href="#" className={classes.link}>
+                Learn
+              </a>
+              <a href="#" className={classes.link}>
+                Academy
+              </a>
             </Group>
+            {!user && (
+              <Group className={classes.hiddenMobile}>
+                <Button variant="default" component="a" href="/login">
+                  Log in
+                </Button>
+                <Button component="a" href="/register">
+                  Sign up
+                </Button>
+              </Group>
+            )}
+
+            {user && (
+              <Group spacing={"lg"}>
+                <Avatar radius={"100%"} color="cyan">
+                  {user.firstName[0]}
+                </Avatar>
+                <Text weight={500}>{`Hello, ${user.firstName}`}</Text>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    logout();
+                    displayNotification();
+                  }}
+                >
+                  Logout
+                </Button>
+              </Group>
+            )}
             {!user && (
               <Group className={classes.hiddenMobile}>
                 <Button variant="default" component="a" href="/login">

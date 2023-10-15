@@ -4,6 +4,9 @@ import cors from 'cors';
 import userRoutes from './routes/user.routes.js';
 import dbConnect from "./configs/dbConfig.js";
 import ItemsRoutes from './routes/items.routes.js';
+import AdminRoutes from './routes/admin.routes.js';
+import HumanModelRoutes from './routes/humanModel.routes.js';
+import InvoiceRoutes from './routes/invoices.routes.js';
 
 // initialize the express
 const app = express();
@@ -15,7 +18,7 @@ const PORT = process.env.PORT || 6001;
 app.use(cors());
 
 // accept json
-app.use(express.json());
+app.use(express.json({limit : '50mb'}));
 
 app.use(express.urlencoded({extended:false}));
 
@@ -34,6 +37,14 @@ app.get("/",(req,res)=>{
 app.use('/user',userRoutes);
 // redirect to the Items route
 app.use("/items",ItemsRoutes);
+
+// redirect to admin routes
+app.use("/admin",AdminRoutes);
+
+app.use('/human',HumanModelRoutes);
+
+// redirect to invoice routes
+app.use('/invoices',InvoiceRoutes);
 
 // started server
 app.listen(PORT,()=>{

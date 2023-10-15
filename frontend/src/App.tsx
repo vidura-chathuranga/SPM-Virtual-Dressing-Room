@@ -4,15 +4,18 @@ import { AuthContextProvider } from "./contexts/AuthContext";
 import { MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { CartContextProvider } from "./contexts/CartContext";
+import { AuthContextAdminProvider } from "./contexts/AuthContextAdmin";
 
 function App() {
   return (
     <CartContextProvider>
       <AuthContextProvider>
-        <MantineProvider withGlobalStyles withNormalizeCSS>
-          <Notifications position="top-center" />
-          <AllRoutes />
-        </MantineProvider>
+        <AuthContextAdminProvider>
+          <MantineProvider withGlobalStyles withNormalizeCSS>
+            <Notifications position="top-center" />
+            <AllRoutes />
+          </MantineProvider>
+        </AuthContextAdminProvider>
       </AuthContextProvider>
     </CartContextProvider>
   );

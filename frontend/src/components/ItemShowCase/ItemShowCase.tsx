@@ -1,4 +1,4 @@
-import { Rating, SimpleGrid } from "@mantine/core";
+import { LoadingOverlay, Rating, SimpleGrid } from "@mantine/core";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import {
@@ -6,12 +6,10 @@ import {
   Image,
   Text,
   Badge,
-  Button,
   Group,
   getStylesRef,
   rem,
   createStyles,
-  Paper,
 } from "@mantine/core";
 import { useAuthContext } from "../../hooks/useAuthContext";
 import { Carousel } from "@mantine/carousel";
@@ -19,6 +17,7 @@ import Autoplay from "embla-carousel-autoplay";
 import { useContext, useRef } from "react";
 import { IconShoppingCartPlus } from "@tabler/icons-react";
 import { CartContext, CartItem } from "../../contexts/CartContext";
+import { useNavigate } from "react-router-dom";
 
 const useStyles = createStyles((theme) => ({
   price: {
@@ -56,6 +55,7 @@ const ItemShowCase = () => {
   const { classes } = useStyles();
   const autoplays: any = useRef();
   autoplays.current = [];
+  const navigate = useNavigate();
 
   const addToCart = (item: any) => {
     const cartItem: CartItem = {
@@ -69,9 +69,7 @@ const ItemShowCase = () => {
   };
 
   const fetchItems = () => {
-    return axios.get("http://localhost:3001/items/", {
-      headers: { Authorization: `bearer ${user.accessToken}` },
-    });
+    return axios.get("http://localhost:3001/items/");
   };
   const {
     data = [],
@@ -80,7 +78,7 @@ const ItemShowCase = () => {
   } = useQuery(["Items"], () => fetchItems().then((response) => response.data));
 
   //   generate ref array
-  data.map((item: any, index: any) => {
+  data.forEach((item: any, index: any) => {
     autoplays.current.push(Autoplay({ delay: (index + 1) * 1000 }));
   });
 
@@ -93,10 +91,21 @@ const ItemShowCase = () => {
   //   generate item cards
   const items = data.map((item: any, index: any) => (
     <div key={item._id}>
-      <Card shadow="sm" padding="lg" radius="md" withBorder>
+      <Card
+        shadow="sm"
+        padding="lg"
+        radius="md"
+        withBorder
+        style={{ cursor: "pointer" }}
+        onClick={() => {
+          navigate(`/view/item/${item._id}`);
+        }}
+      >
         <Card.Section>
           <Carousel
             loop
+            withIndicators
+            withControls={false}
             plugins={[autoplays.current[index]]}
             onMouseEnter={autoplays.current[index].stop}
             onMouseLeave={autoplays.current[index].reset}
@@ -147,6 +156,7 @@ const ItemShowCase = () => {
 
   return (
     <SimpleGrid cols={3} spacing={"xl"} px={120} py={40}>
+      <LoadingOverlay visible={isLoading} overlayBlur={2} />
       {items}
     </SimpleGrid>
   );
